@@ -1,4 +1,4 @@
-import pygame;from pygame.gfxdraw import aacircle;pygame.init();font = pygame.font.SysFont('consolas.ttf',32);winsize = pygame.display.get_desktop_sizes()
+import pygame;from pygame.gfxdraw import aacircle;pygame.init();font = pygame.font.SysFont('consolas.ttf',32);winsize = pygame.display.get_desktop_sizes();winsize = winsize[0]
 if len(pygame.display.get_desktop_sizes()) > 1: winsize = winsize[0]
 dis = pygame.display.set_mode(winsize);distance_from_edge = round((winsize[0] - 520)/2);pygame.display.set_caption('doppler effect simulation')
 def draw_transparent_circle(win,x,y,radius,color,alpha_level):aacircle(win,round(x),round(y),radius,(color[0],color[1],color[2],alpha_level))
