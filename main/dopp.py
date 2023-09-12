@@ -1,14 +1,14 @@
-import pygame;from pygame.gfxdraw import aacircle;pygame.init();font = pygame.font.SysFont('consolas.ttf',32);winsize = pygame.display.get_desktop_sizes();winsize = winsize[0]
-if len(pygame.display.get_desktop_sizes()) > 1: winsize = winsize[0]
-dis = pygame.display.set_mode(winsize);distance_from_edge = round((winsize[0] - 520)/2);pygame.display.set_caption('doppler effect simulation')
+import pygame;from pygame.gfxdraw import aacircle;pygame.init();font = pygame.font.SysFont('consolas.ttf',32);winsize = pygame.display.get_desktop_sizes()
+if (isinstance(winsize,list)): winsize = winsize[0]
+dis = pygame.display.set_mode(winsize);distance_from_edge = round((winsize[0] - 520)/2);distance_from_top=round(winsize[1]/2);pygame.display.set_caption('doppler effect simulation')
 def draw_transparent_circle(win,x,y,radius,color,alpha_level):aacircle(win,round(x),round(y),radius,(color[0],color[1],color[2],alpha_level))
 class control: #slider
-    def __init__(self):self.value = [30/100,900];self.highlighted = False
+    def __init__(self):self.value = [30/100,round(distance_from_top*(1.75))];self.highlighted = False
     def calcval(self,newval):self.value[0] = newval/100
     def draw(self): 
-        pygame.draw.aaline(dis,(50,50,50),(distance_from_edge,900),(distance_from_edge+520,900))
-        if self.highlighted is True:aacircle(dis,round(self.value[0]*100)+distance_from_edge,900,20,(50,50,50,255))
-        else:aacircle(dis,round(self.value[0]*100)+distance_from_edge,900,20,(50,50,50,80))
+        pygame.draw.aaline(dis,(50,50,50),(distance_from_edge,round(distance_from_top*(1.75))),(distance_from_edge+520,round(distance_from_top*(1.75))))
+        if self.highlighted is True:aacircle(dis,round(self.value[0]*100)+distance_from_edge,round(distance_from_top*(1.75)),20,(50,50,50,255))
+        else:aacircle(dis,round(self.value[0]*100)+distance_from_edge,round(distance_from_top*(1.75)),20,(50,50,50,80))
 class wave: #generated wave
     def __init__(self,sourcepos):self.og_source = sourcepos;self.alpha = 255;self.rad = 30
     def draw(self):draw_transparent_circle(dis,self.og_source[0],self.og_source[1],self.rad,(0,0,0),self.alpha if self.alpha > -1 else 0)
@@ -40,9 +40,9 @@ while True:
             mousepos = pygame.mouse.get_pos()
             if mousepos[0] in range(round(slider.value[0]*100)+distance_from_edge-20,round(slider.value[0]*100)+distance_from_edge+60): slider.highlighted = True;isclicked = True #if clicked on slider  
         if event.type == pygame.MOUSEBUTTONUP: isclicked = False;slider.highlighted = False #if released from slider
-    text = font.render(f'{round(speed*66)}m/s',True,(0,0,0),None); textRect = text.get_rect();textRect.center = (1300,900);dis.blit(text,textRect);speed = slider.value[0] # display velocity and set speed to slider's velocity value
+    text = font.render(f'{round(speed*66)}m/s',True,(0,0,0),None); textRect = text.get_rect();textRect.center = (1300,round(distance_from_top*1.75));dis.blit(text,textRect);speed = slider.value[0] # display velocity and set speed to slider's velocity value
     for wave_value in waves:
-        if wave_value.alpha <= 0: del wave_value #del wave if it is transparent
+        if wave_value.alpha <= 0: waves.pop(waves.index(wave_value)) #del wave if it is transparent
         else: wave_value.update(wavelength);wave_value.draw() #enlarge and draw waves
     if up == True:source.pos[1] -= speed
     if down == True:source.pos[1] +=speed
